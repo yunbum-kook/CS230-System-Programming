@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <fcntl.h>
 #include <netdb.h>
+#include <dirent.h>
 #define MAXLINE 1024
 #define CLIENT "./Client_files/"
 
@@ -86,7 +87,27 @@ int multiple(char* filename) {
  * RETURNS: None
  */
 void list() {
-	system("/bin/ls ./Client_files");
+	DIR *curr_dir;
+    curr_dir = opendir("./Client_files");
+    int count = 0;
+    
+    struct dirent *entry;
+    if (curr_dir != NULL) {
+        while ((entry = readdir(curr_dir))) {
+        	char* fn = entry->d_name;
+        	if (fn[0] == '.') {
+        		continue;
+        	} else {
+                if (count == 0) {
+                    printf("%s", entry->d_name);
+                    count += 1;
+                } else {
+                    printf(" %s", entry->d_name);
+                }
+            }
+        }
+        printf("\n");
+    }
 }
 
 /*
